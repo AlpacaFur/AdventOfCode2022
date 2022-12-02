@@ -1,6 +1,6 @@
 # Advent of Code 2022
 
-My solutions to Advent of Code 2022, written in Rust. I love seeing the variety of solution other people come up with, so I decided to post my own.
+My solutions to [Advent of Code 2022](https://adventofcode.com/2022), written in Rust. I love seeing the variety of solution other people come up with, so I decided to post my own.
 
 Disclaimers:
 
