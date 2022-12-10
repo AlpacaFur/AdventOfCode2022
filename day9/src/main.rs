@@ -39,9 +39,7 @@ fn move_tuple(tuple: (i32, i32), direction: &Direction) -> (i32, i32) {
 }
 
 fn move_tail(head: (i32, i32), tail: (i32, i32)) -> (i32, i32) {
-    if tail.0 == head.0 && tail.1 == head.1 {
-        (tail.0, tail.1)
-    } else if (head.0 - tail.0).abs() <= 1 && (head.1 - tail.1).abs() <= 1 {
+    if (head.0 - tail.0).abs() <= 1 && (head.1 - tail.1).abs() <= 1 {
         (tail.0, tail.1)
     } else {
         (tail.0 + (head.0 - tail.0).signum(),
