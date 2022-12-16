@@ -148,7 +148,6 @@ fn part_2() -> i32 {
 
     let used: i32 = dir_size(&directory_contents, "");
     let space_to_free = TARGET_FREE_SPACE - (TOTAL_SPACE - used);
-    println!("{}, {}, {}", (TOTAL_SPACE - used), space_to_free, used);
 
     dir_sizes.filter(|size| size >= &space_to_free).min().unwrap()
 }
