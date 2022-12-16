@@ -12,14 +12,14 @@ fn part_1() -> i32 {
 
     let mut signal_strengths: Vec<i32> = vec![];
 
-    let mut current_instr: Instruction = Instruction::noop;
+    let mut current_instr: Instruction = Instruction::Noop;
     let mut current_elapsed = 1;
 
     loop {
         if current_elapsed == instruction_duration(current_instr) {
             match current_instr {
-                Instruction::noop => {},
-                Instruction::addx(val) => {
+                Instruction::Noop => {},
+                Instruction::Addx(val) => {
                     x += val;
                 }
             }
@@ -50,23 +50,23 @@ fn is_notable_clock_cycle(clock_cycle: i32) -> bool {
 
 fn instruction_duration(instr: Instruction) -> i32 {
     match instr {
-        Instruction::noop => 1,
-        Instruction::addx(_) => 2
+        Instruction::Noop => 1,
+        Instruction::Addx(_) => 2
     }
 }
 
 #[derive(Clone, Copy)]
 enum Instruction {
-    noop,
-    addx(i32)
+    Noop,
+    Addx(i32)
 }
 
 fn str_to_instruction(string: &str) -> Instruction {
     if string == "noop" {
-        Instruction::noop
+        Instruction::Noop
     } else {
         let num = string.split(" ").nth(1).unwrap().parse::<i32>().unwrap();
-        Instruction::addx(num)
+        Instruction::Addx(num)
     }
 }
 
@@ -93,8 +93,8 @@ fn part_2() -> String {
     loop {
         if current_elapsed == instruction_duration(current_instr) {
             match current_instr {
-                Instruction::noop => {},
-                Instruction::addx(val) => {
+                Instruction::Noop => {},
+                Instruction::Addx(val) => {
                     x += val;
                 }
             }
