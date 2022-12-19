@@ -1,26 +1,20 @@
 use std::{fs, collections::{HashMap, HashSet, BinaryHeap}, cmp::min};
 
-// CODE DOES NOT FUNCTION ON ACTUAL INPUT ATM :(
-// This only works for the sample data they give in the problem for some reason.
-
 fn build_graph_from_input() -> (HashMap<String, Vec<String>>, HashMap<String, i32>) {
     let mut graph: HashMap<String, Vec<String>> = HashMap::new();
     let mut flow_rates: HashMap<String, i32> = HashMap::new();
 
-    fs::read_to_string("sample_input")
+    fs::read_to_string("input")
         .unwrap()
         .lines()
         .for_each(|line| {
             let label = &line[6..8];
             let rest: Vec<&str> = line[23..].split(";").collect();
-            // println!("{}|{}", rest[0], rest[1]);
             let flow: i32 = rest[0].parse().unwrap();
             let adjacent: Vec<String> = rest[1].replace("s", "")[22..]
                 .split(", ")
                 .map(|str| str.to_string())
                 .collect();
-            // println!("{:?}", adjacent);
-            // println!("{} -- {{{}}}", label, adjacent.join(" "));
             graph.insert(label.to_string(), adjacent);
             flow_rates.insert(label.to_string(), flow);
         });
@@ -30,15 +24,27 @@ fn build_graph_from_input() -> (HashMap<String, Vec<String>>, HashMap<String, i3
 
 impl Ord for QueuedNode {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.distance.cmp(&other.distance)
+        other.distance.cmp(&self.distance)
     }
 }
 
 impl PartialOrd for QueuedNode {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.distance.cmp(&other.distance))
+        Some(other.distance.cmp(&self.distance))
     }
 }
+
+// impl PartialEq for QueuedNode {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.node == other.node
+//     }
+// }
+
+// impl Hash for QueuedNode {
+//     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+//         self.node.hash(state);
+//     }
+// }
 
 #[derive(Eq, PartialEq)]
 struct QueuedNode {
@@ -63,10 +69,8 @@ fn dijkstras_from(from: &str, graph: &HashMap<String, Vec<String>>) -> HashMap<S
             let candidate_dist = current.distance + 1;
             let new_dist = match dists.get(neighbor) {
                 Some(dist) => min(*dist, candidate_dist),
-                None => candidate_dist
-
+                None => candidate_dist  
             };
-
             dists.insert(neighbor.to_string(), new_dist);
 
             if !visited.contains(neighbor) {
@@ -83,9 +87,8 @@ fn dijkstras_from(from: &str, graph: &HashMap<String, Vec<String>>) -> HashMap<S
 
 fn part_1() -> i32 {
     let (graph, flow_rates) = build_graph_from_input();
-    // println!("{:?}", graph);
+
     let mut helpful_valves: Vec<String> = graph.keys().filter(|&node| {
-        // println!("{}", node);
         flow_rates.get(node).unwrap() > &0 || node == "AA"
     }).map(|str| str.to_string()).collect();
     helpful_valves.sort();
@@ -102,39 +105,27 @@ fn part_1() -> i32 {
     }
 
     let mut valve_distances: HashMap<i32, Vec<i32>> = HashMap::new();
-    
+
     for valve in &helpful_valves {
         let mut distances = vec![];
         let distances_from_valve = dijkstras_from(valve, &graph);
         
         for valve_id in 0..cur_valve_id {
-            // distances.push(0);
             distances.push(*distances_from_valve.get(id_to_valve.get(&valve_id).unwrap()).unwrap())
         }
 
         valve_distances.insert(*valve_to_id.get(valve).unwrap(), distances);
     }
-
-    println!("{:?}", valve_to_id);
-    println!("cur valve id: {}", cur_valve_id); 
-    println!("mask: {}", (1 << cur_valve_id) - 1); 
-
-    let max_pressure: i32 = find_max_pressure_release(*valve_to_id.get("AA").unwrap(), (1 << cur_valve_id) - 1, 30, &valve_distances, &valve_flow_rates);
-
-
-
-    println!("{:?}", valve_distances);
     
-    
-
     /*
         map each string to a number
         
         OPT(n, v, m) = for each node not visited in v, max( pressure_released + OPT(n, v - n, m - dist + 1))
     */
 
+    let max_pressure: i32 = find_max_pressure_release(*valve_to_id.get("AA").unwrap(), (1 << cur_valve_id) - 1, 30, &valve_distances, &valve_flow_rates);
+
     max_pressure
-    // 5
 }
 
 fn find_max_pressure_release(starting_node: i32, visitable_bitmask: i32, starting_time: i32, distances: &HashMap<i32, Vec<i32>>, valve_flow_rates: &HashMap<i32, i32>) -> i32 {
@@ -162,8 +153,6 @@ fn find_max_pressure_release(starting_node: i32, visitable_bitmask: i32, startin
         }
     }
 
-    // println!("{:?}", dp_table[30][65535]);
-
     dp_table[starting_time as usize][visitable_bitmask as usize][starting_node as usize]
 }
 
@@ -173,12 +162,12 @@ fn part_2() -> i32 {
 
 fn main() {
 
-    // between 1358 - 2058
-    // println!("Part 1");
+    println!("Part 1");
     let part_1 = part_1();
     println!("{part_1}");
 
-    // println!("Part 2");
+    println!("Part 2");
+    println!("TODO!");
     let part_2 = part_2();
     println!("{part_2}");
 }
